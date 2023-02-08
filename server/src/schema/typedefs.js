@@ -26,7 +26,7 @@ const typeDefs = `#graphql
 
     type Query {
         tasks: [Task]
-        task(id:Int):Task
+        task(id:String):Task
     }
 `;
 
