@@ -10,7 +10,6 @@ const typeDefs = `#graphql
 
     input AddTaskInput {
         task_name:String
-        completed:Boolean
     }
 
     input UpdateTaskInput {

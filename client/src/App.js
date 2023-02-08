@@ -1,5 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
+import GetTaskById from "./components/GetTaskById";
 
 import {
   ApolloClient,
@@ -7,6 +8,8 @@ import {
   ApolloProvider,
   gql,
   useQuery,
+  NetworkStatus,
+  useLazyQuery,
 } from "@apollo/client";
 
 const client = new ApolloClient({
@@ -17,41 +20,52 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <Home />
+      {/* <Home /> */}
+      <GetTaskById />
     </ApolloProvider>
   );
 }
 
 function Home() {
   const GET_ALL_TASKS = gql`
-    query GetTasks($task_id: String) {
+    query GetTasks {
       tasks {
         task_name
         completed
       }
 
-      task(id: $task_id) {
-        task_name
-        _id
-        completed
-      }
+      # task(id: $task_id) {
+      #   task_name
+      #   _id
+      #   completed
+      # }
     }
   `;
 
-  const variables = {
-    task_id: "63de23a7a325b784e0645e55",
-  };
+  // const variables = {
+  //   task_id: "63de23a7a325b784e0645e55",
+  // };
 
-  const { data, loading, error } = useQuery(GET_ALL_TASKS, {
-    variables,
-    pollInterval: 10000,
+  const { data, loading, error, networkStatus } = useQuery(GET_ALL_TASKS, {
+    pollInterval: 300000,
+    notifyOnNetworkStatusChange: true,
   });
-
-  console.log(data);
 
   if (error) console.log(error.message);
 
-  return <div>home</div>;
+  if (loading) return <h1>loading</h1>;
+
+  if (networkStatus === NetworkStatus.refetch) {
+    return <h1>Refetching</h1>;
+  }
+
+  return (
+    <div>
+      {data.tasks.map((task) => {
+        return <h1>{task.task_name}</h1>;
+      })}
+    </div>
+  );
 }
 
 export default App;
