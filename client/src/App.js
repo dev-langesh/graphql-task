@@ -1,5 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { gql } from "@apollo/client";
+
+const query = gql``;
 
 function App() {
   return (
